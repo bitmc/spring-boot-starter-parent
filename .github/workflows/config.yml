@@ -30,8 +30,10 @@ jobs:
       with:
         key: ${{ hashFiles('**/pom.xml') }}
         path: ~/.m2
-    - run: mvn install -B -DskipTests
-    - run: mvn deploy -B
+    - run: |
+        mvn install -B -DskipTests
+    - run: |
+        mvn deploy -B
   release:
     needs: snapshot
     runs-on: ubuntu-latest
@@ -46,7 +48,7 @@ jobs:
         server-password: MAVEN_PASSWORD
     - run: |
         git config user.email ${GIT_USER_EMAIL}
-        git config user.name ${GIT_USER_NAME}
+        git config user.name "${GIT_USER_NAME}"
     - run: |
         mkdir -m 700 ~/.ssh
         echo -e "${GITHUB_SSH_KEY}" > ~/.ssh/id_rsa
@@ -57,3 +59,5 @@ jobs:
     - run: |
         mvn release:prepare -B -DreleaseVersion="${GITHUB_REF##*/}" -Darguments=-DskipTests
         mvn release:perform -B -Pgpg -Darguments=-Dgpg.passphrase=${GPG_PASSPHRASE}
+    - run: |
+        git push origin ${GITHUB_REF}:master
