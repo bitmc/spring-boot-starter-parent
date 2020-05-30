@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.3.0.RELEASE</version>
+	</parent>
+
+	<groupId>com.github.bitmc</groupId>
+	<artifactId>spring-boot-starter-parent</artifactId>
+	<version>2.3.0.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<scm>
+		<url>https://github.com/bitmc/${project.artifactId}/tree/master</url>
+		<connection>scm:git:git@github.com:bitmc/${project.artifactId}.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/bitmc/${project.artifactId}.git</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
+
+	<distributionManagement>
+		<repository>
+			<id>sonatype</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+		</repository>
+		<snapshotRepository>
+			<id>sonatype</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<properties>
+		<checkstyle.version>8.32</checkstyle.version>
+		<closure-compiler-maven-plugin.version>2.16.0</closure-compiler-maven-plugin.version>
+		<license-maven-plugin.version>3.0</license-maven-plugin.version>
+		<maven.compiler.release>8</maven.compiler.release>
+		<maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version>
+		<maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+		<maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+		<minify-maven-plugin.version>1.7.6</minify-maven-plugin.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>central</id>
+			<url>https://repo.maven.apache.org/maven2</url>
+		</repository>
+		<repository>
+			<id>sonatype</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>central</id>
+			<url>https://repo.maven.apache.org/maven2</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>sonatype</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<compilerArgs>
+							<arg>-Xlint:all,-deprecation,-processing</arg>
+						</compilerArgs>
+						<failOnWarning>true</failOnWarning>
+						<parameters>true</parameters>
+						<showWarnings>true</showWarnings>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<configuration>
+						<archive>
+							<addMavenDescriptor>false</addMavenDescriptor>
+						</archive>
+						<excludes>
+							<exclude>**/.git*</exclude>
+						</excludes>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<executions>
+						<execution>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<archive>
+							<addMavenDescriptor>false</addMavenDescriptor>
+						</archive>
+						<excludes>
+							<exclude>**/.git*</exclude>
+						</excludes>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+					<version>${maven-checkstyle-plugin.version}</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>check</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<includeTestSourceDirectory>true</includeTestSourceDirectory>
+						<violationSeverity>warning</violationSeverity>
+					</configuration>
+					<dependencies>
+						<dependency>
+							<groupId>com.puppycrawl.tools</groupId>
+							<artifactId>checkstyle</artifactId>
+							<version>${checkstyle.version}</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>${maven-javadoc-plugin.version}</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<archive>
+							<addMavenDescriptor>false</addMavenDescriptor>
+						</archive>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-gpg-plugin</artifactId>
+					<version>${maven-gpg-plugin.version}</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>sign</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<gpgArguments>
+							<arg>--pinentry-mode</arg>
+							<arg>loopback</arg>
+						</gpgArguments>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>${maven-release-plugin.version}</version>
+					<configuration>
+						<scmCommentPrefix xml:space="preserve">[maven-release-plugin] [ci skip] </scmCommentPrefix>
+						<tagNameFormat>@{project.version}</tagNameFormat>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>com.mycila</groupId>
+					<artifactId>license-maven-plugin</artifactId>
+					<version>${license-maven-plugin.version}</version>
+					<configuration>
+						<includes>
+							<include>**/*.java</include>
+						</includes>
+						<inlineHeader>Copyright ${license.git.copyrightYears} ${author}
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</inlineHeader>
+						<mapping>
+							<java>SLASHSTAR_STYLE</java>
+						</mapping>
+						<properties>
+							<author>the original author or authors.</author>
+						</properties>
+					</configuration>
+					<dependencies>
+						<dependency>
+							<groupId>com.mycila</groupId>
+							<artifactId>license-maven-plugin-git</artifactId>
+							<version>${license-maven-plugin.version}</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+				<plugin>
+					<groupId>com.samaxes.maven</groupId>
+					<artifactId>minify-maven-plugin</artifactId>
+					<version>${minify-maven-plugin.version}</version>
+					<executions>
+						<execution>
+							<phase>prepare-package</phase>
+						</execution>
+					</executions>
+					<configuration>
+						<cssEngine>YUI</cssEngine>
+						<cssSourceDir>.</cssSourceDir>
+						<cssSourceIncludes>
+							<cssSourceInclude>**/*.css</cssSourceInclude>
+						</cssSourceIncludes>
+						<jsSourceDir>.</jsSourceDir>
+						<jsSourceExcludes>
+							<jsSourceExclude>**/*</jsSourceExclude>
+						</jsSourceExcludes>
+						<nosuffix>true</nosuffix>
+						<skipMerge>true</skipMerge>
+						<webappSourceDir>${project.basedir}/src/main/resources</webappSourceDir>
+						<webappTargetDir>${project.build.directory}/classes</webappTargetDir>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>com.github.blutorange</groupId>
+					<artifactId>closure-compiler-maven-plugin</artifactId>
+					<version>${closure-compiler-maven-plugin.version}</version>
+					<executions>
+						<execution>
+							<phase>prepare-package</phase>
+						</execution>
+					</executions>
+					<configuration>
+						<baseSourceDir>${project.basedir}/src/main/webapp</baseSourceDir>
+						<baseTargetDir>${project.build.directory}/classes</baseTargetDir>
+						<closureLanguageIn>ECMASCRIPT_2018</closureLanguageIn>
+						<closureLanguageOut>ECMASCRIPT_2015</closureLanguageOut>
+						<includes>
+							<include>**/*.js</include>
+						</includes>
+						<skipMerge>true</skipMerge>
+						<sourceDir>.</sourceDir>
+						<targetDir>.</targetDir>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+					<configuration>
+						<executable>true</executable>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>gpg</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+</project>
