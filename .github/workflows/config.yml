@@ -1,23 +1,17 @@
 on:
   push:
     branches:
-    - master
-    - feature/*
-    - release/*
-
-env:
-  GIT_USER_EMAIL: ${{ secrets.BUILDMASTER_GIT_USER_EMAIL }}
-  GIT_USER_NAME:  ${{ secrets.BUILDMASTER_GIT_USER_NAME }}
-  GITHUB_SSH_KEY: ${{ secrets.BUILDMASTER_GITHUB_SSH_KEY }}
-  GPG_KEY_BASE64: ${{ secrets.BUILDMASTER_GPG_KEY_BASE64 }}
-  GPG_PASSPHRASE: ${{ secrets.BUILDMASTER_GPG_PASSPHRASE }}
-  MAVEN_USERNAME: ${{ secrets.MAVEN_SONATYPE_USERNAME }}
-  MAVEN_PASSWORD: ${{ secrets.MAVEN_SONATYPE_PASSWORD }}
+      - main
+      - feature/*
+      - release/*
 
 jobs:
   snapshot:
-    runs-on: ubuntu-latest
     if: ${{ !contains(github.event.head_commit.message, 'ci skip') }}
+    runs-on: ubuntu-latest
+    env:
+      MAVEN_USERNAME: ${{ secrets.MAVEN_SONATYPE_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.MAVEN_SONATYPE_PASSWORD }}
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-java@v1
@@ -36,8 +30,16 @@ jobs:
         mvn deploy -B
   release:
     needs: snapshot
-    runs-on: ubuntu-latest
     if: ${{ startsWith(github.ref, 'refs/heads/release') }}
+    runs-on: ubuntu-latest
+    env:
+      GIT_USER_EMAIL: ${{ secrets.BUILD_GIT_USER_EMAIL }}
+      GIT_USER_NAME: ${{ secrets.BUILD_GIT_USER_NAME }}
+      GITHUB_SSH_KEY: ${{ secrets.BUILD_GITHUB_SSH_KEY }}
+      GPG_KEY_BASE64: ${{ secrets.BUILD_GPG_KEY_BASE64 }}
+      GPG_PASSPHRASE: ${{ secrets.BUILD_GPG_PASSPHRASE }}
+      MAVEN_USERNAME: ${{ secrets.MAVEN_SONATYPE_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.MAVEN_SONATYPE_PASSWORD }}
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-java@v1
@@ -60,4 +62,4 @@ jobs:
         mvn release:prepare -B -DreleaseVersion="${GITHUB_REF##*/}" -Darguments=-DskipTests
         mvn release:perform -B -Pgpg -Darguments=-Dgpg.passphrase=${GPG_PASSPHRASE}
     - run: |
-        git push origin ${GITHUB_REF}:master
+        git push origin ${GITHUB_REF}:main
