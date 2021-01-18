@@ -12,7 +12,7 @@
 	<parent>
 	    <groupId>com.github.bitmc</groupId>
 	    <artifactId>spring-boot-starter-parent</artifactId>
-	    <version>2.4.1.0</version>
+	    <version>2.4.2.0</version>
 	</parent>
 	```
 
